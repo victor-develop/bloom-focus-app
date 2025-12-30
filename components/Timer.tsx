@@ -49,6 +49,7 @@ const Timer: React.FC<TimerProps> = ({ lang, onComplete, isPaused, initialMins, 
   
   const timerRef = useRef<number | null>(null);
   const lastMarkRef = useRef<number>(0);
+  const hasCompletedRef = useRef(false);
   const audioCtx = useRef<AudioContext | null>(null);
 
   // Sound Synthesizer
@@ -92,6 +93,7 @@ const Timer: React.FC<TimerProps> = ({ lang, onComplete, isPaused, initialMins, 
       setTargetMins(initialMins);
       setSecondsRemaining(initialMins * 60);
       lastMarkRef.current = 0;
+      hasCompletedRef.current = false;
     }
   }, [initialMins, isActive]);
 
@@ -100,7 +102,7 @@ const Timer: React.FC<TimerProps> = ({ lang, onComplete, isPaused, initialMins, 
   useEffect(() => {
     if (isActive && secondsRemaining > 0) {
       timerRef.current = window.setInterval(() => {
-        setSecondsRemaining((prev) => prev - 1);
+        setSecondsRemaining((prev) => Math.max(prev - 1, 0));
       }, 1000);
 
       const marks = [0.25, 0.5, 0.75, 0.9];
@@ -120,20 +122,33 @@ const Timer: React.FC<TimerProps> = ({ lang, onComplete, isPaused, initialMins, 
           setTimeout(() => setInterimMessage(null), 4000);
         }
       });
-    } else if (secondsRemaining === 0 && isActive) {
-      setIsActive(false);
-      playSound('complete');
-      setShowCelebration(true);
-      setTimeout(() => {
-        setShowCelebration(false);
-        onComplete();
-      }, 2500);
     }
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isActive, secondsRemaining, onComplete, progress, lang, playSound]);
+  }, [isActive, secondsRemaining, progress, lang, playSound]);
+
+  const finishSession = useCallback(() => {
+    if (hasCompletedRef.current) return;
+    hasCompletedRef.current = true;
+
+    setIsActive(false);
+    playSound('complete');
+    setShowCelebration(true);
+    setInterimMessage(null);
+
+    setTimeout(() => {
+      setShowCelebration(false);
+      onComplete();
+    }, 2500);
+  }, [onComplete, playSound]);
+
+  useEffect(() => {
+    if (isActive && secondsRemaining <= 0) {
+      finishSession();
+    }
+  }, [isActive, secondsRemaining, finishSession]);
 
   const toggleTimer = () => {
     // Resume AudioContext on user gesture
@@ -141,7 +156,11 @@ const Timer: React.FC<TimerProps> = ({ lang, onComplete, isPaused, initialMins, 
       audioCtx.current = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
     audioCtx.current.resume();
-    
+
+    if (!isActive) {
+      hasCompletedRef.current = false;
+    }
+
     setIsActive(!isActive);
     setShowSettings(false);
     setShowCelebration(false);
@@ -153,6 +172,7 @@ const Timer: React.FC<TimerProps> = ({ lang, onComplete, isPaused, initialMins, 
     lastMarkRef.current = 0;
     setInterimMessage(null);
     setShowCelebration(false);
+    hasCompletedRef.current = false;
   };
 
   const updateTarget = (mins: number) => {

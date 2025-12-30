@@ -95,6 +95,31 @@ const App: React.FC = () => {
     }
   };
 
+  const resetApp = useCallback(async () => {
+    const confirmMsg = lang === 'en'
+      ? 'This will clear all data, caches, and the service worker. Continue?'
+      : '这将清除所有数据、缓存和服务工作线程。确定继续吗？';
+
+    const confirmed = window.confirm(confirmMsg);
+    if (!confirmed) return;
+
+    try {
+      localStorage.clear();
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((reg) => reg.unregister()));
+      }
+    } catch (err) {
+      console.error('Reset failed', err);
+    } finally {
+      window.location.reload();
+    }
+  }, [lang]);
+
   const t = TRANSLATIONS[lang];
 
   const todayFlowers = useMemo(() => {
@@ -114,7 +139,13 @@ const App: React.FC = () => {
   if (showStats) {
     return (
       <div className={`min-h-screen transition-colors duration-1000 ${getThemeClasses()}`}>
-        <Meadow lang={lang} stats={stats} onBack={() => setShowStats(false)} onClear={clearStats} />
+        <Meadow 
+          lang={lang} 
+          stats={stats} 
+          onBack={() => setShowStats(false)} 
+          onClear={clearStats} 
+          onReset={resetApp}
+        />
       </div>
     );
   }

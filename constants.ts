@@ -182,7 +182,8 @@ export const TRANSLATIONS: TranslationsMap = {
     today: "Today's Garden",
     history: "Journey Logs",
     clearStats: "Clear Garden",
-    noHistory: "Your garden is empty. Start focusing to plant your first seed."
+    noHistory: "Your garden is empty. Start focusing to plant your first seed.",
+    resetApp: "Reset App"
   },
   zh: {
     title: "心花绽放",
@@ -198,7 +199,8 @@ export const TRANSLATIONS: TranslationsMap = {
     today: "今日成果",
     history: "成长足迹",
     clearStats: "清空花园",
-    noHistory: "这里还是一片荒芜。开始专注，种下你的第一颗种子吧。"
+    noHistory: "这里还是一片荒芜。开始专注，种下你的第一颗种子吧。",
+    resetApp: "重置应用"
   }
 };
 

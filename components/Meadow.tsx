@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Flower2, Mountain, Trash2, ArrowLeft, Sun, Calendar } from 'lucide-react';
+import { Flower2, Mountain, Trash2, ArrowLeft, Sun, Calendar, RefreshCcw } from 'lucide-react';
 import { DayStats, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -9,9 +9,10 @@ interface MeadowProps {
   lang: Language;
   onBack: () => void;
   onClear: () => void;
+  onReset: () => void;
 }
 
-const Meadow: React.FC<MeadowProps> = ({ stats, lang, onBack, onClear }) => {
+const Meadow: React.FC<MeadowProps> = ({ stats, lang, onBack, onClear, onReset }) => {
   const t = TRANSLATIONS[lang];
   const todayDate = new Date().toISOString().split('T')[0];
   const todayStats = stats.find(s => s.date === todayDate) || { flowers: 0, stones: 0 };
@@ -37,13 +38,23 @@ const Meadow: React.FC<MeadowProps> = ({ stats, lang, onBack, onClear }) => {
             <div className="w-12 h-1 bg-emerald-200 rounded-full mt-2 opacity-50"></div>
           </div>
 
-          <button 
-            onClick={onClear}
-            className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
-            title={t.clearStats}
-          >
-            <Trash2 size={22} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={onReset}
+              className="group flex items-center gap-2 px-3 py-2 bg-white/40 hover:bg-white/60 backdrop-blur-md rounded-full transition-all border border-white/50 text-slate-600 shadow-sm text-xs font-semibold"
+              title={t.resetApp}
+            >
+              <RefreshCcw size={18} className="text-slate-500 group-hover:text-emerald-600 transition-colors" />
+              <span>{t.resetApp}</span>
+            </button>
+            <button 
+              onClick={onClear}
+              className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all"
+              title={t.clearStats}
+            >
+              <Trash2 size={22} />
+            </button>
+          </div>
         </div>
 
         {/* Today's Immersive Section */}

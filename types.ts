@@ -30,6 +30,7 @@ export interface UIStrings {
   history: string;
   clearStats: string;
   noHistory: string;
+  resetApp: string;
 }
 
 export type TranslationsMap = Record<Language, UIStrings>;
