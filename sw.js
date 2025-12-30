@@ -1,5 +1,5 @@
 const APP_PREFIX = 'BloomFocus_';
-const VERSION = 'v1.4';
+const VERSION = 'v1.5';
 const CACHE_NAME = `${APP_PREFIX}${VERSION}`;
 
 // Scope-aware base path so caching works on GitHub Pages subdirectories.
