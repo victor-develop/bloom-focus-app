@@ -17,6 +17,7 @@ This project uses **Vite** for optimized builds. To deploy to GitHub Pages:
    - You can push the contents of the `dist` folder to a `gh-pages` branch.
    - Or configure a GitHub Action to automate this.
 4. **Settings**: Navigate to **Settings** > **Pages** in your repository and set the source to the branch containing your built assets.
+   - This repo ships with `.github/workflows/deploy.yml`, which builds on the `main` branch and publishes to `gh-pages`. Point GitHub Pages at `gh-pages` or run the workflow manually after pushing.
 5. **URL Structure**: Access your app at `https://<username>.github.io/<repo-name>/`.
    - *Note: Ensure the trailing slash `/` is included in the URL for the Service Worker to register correctly.*
 
