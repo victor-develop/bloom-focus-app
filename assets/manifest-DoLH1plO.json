@@ -1,0 +1,19 @@
+
+{
+  "short_name": "BloomFocus",
+  "name": "BloomFocus: Sweet/Strong Focus Coach",
+  "description": "A privacy-first, local-only focus coach that helps you bloom or build iron discipline.",
+  "icons": [
+    {
+      "src": "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f338.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#f8fafc",
+  "display": "standalone",
+  "theme_color": "#ec4899",
+  "orientation": "portrait-primary"
+}
