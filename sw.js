@@ -1,5 +1,5 @@
 const APP_PREFIX = 'BloomFocus_';
-const VERSION = 'v1.3';
+const VERSION = 'v1.4';
 const CACHE_NAME = `${APP_PREFIX}${VERSION}`;
 
 // Scope-aware base path so caching works on GitHub Pages subdirectories.
@@ -15,7 +15,7 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
   );
 });
 
@@ -30,7 +30,7 @@ self.addEventListener('activate', (event) => {
           return undefined;
         })
       )
-    )
+    ).then(() => self.clients.claim())
   );
 });
 
