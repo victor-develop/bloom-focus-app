@@ -6,17 +6,18 @@
 
 ---
 
-## 🚀 GitHub Pages Deployment
+## 🚀 Deployment (GitHub Pages)
 
-This project is optimized for GitHub Pages, including support for subfolder hosting and robust offline caching.
+This project uses **Vite** for optimized builds. To deploy to GitHub Pages:
 
 ### Step-by-Step Setup:
-1. **Repository Creation**: Push this code to a new GitHub repository.
-2. **Settings**: Navigate to **Settings** > **Pages** in your repository.
-3. **Branch**: Under **Build and deployment**, set the source to "Deploy from a branch".
-4. **Folder**: Select the `main` branch and the `/(root)` folder.
-5. **Enforce HTTPS**: Ensure "Enforce HTTPS" is checked (this is required for Service Workers).
-6. **URL Structure**: Access your app at `https://<username>.github.io/<repo-name>/`. 
+1. **Install Dependencies**: Run `npm install` in your terminal.
+2. **Build the Project**: Run `npm run build`. This generates a `dist` folder.
+3. **Deploy the `dist` folder**: 
+   - You can push the contents of the `dist` folder to a `gh-pages` branch.
+   - Or configure a GitHub Action to automate this.
+4. **Settings**: Navigate to **Settings** > **Pages** in your repository and set the source to the branch containing your built assets.
+5. **URL Structure**: Access your app at `https://<username>.github.io/<repo-name>/`.
    - *Note: Ensure the trailing slash `/` is included in the URL for the Service Worker to register correctly.*
 
 ---
@@ -43,7 +44,8 @@ Most productivity apps are cold and clinical. BloomFocus believes in **Emotional
 
 ## 🛠️ Technical Stack
 
-- **Framework:** React 19 (ESM)
+- **Framework:** React 19
+- **Build Tool:** Vite
 - **Styling:** Tailwind CSS
 - **Icons:** Lucide React
 - **Persistence:** Browser `localStorage`.
@@ -53,19 +55,12 @@ Most productivity apps are cold and clinical. BloomFocus believes in **Emotional
 
 ## 📜 Credits & Acknowledgments
 
-The Service Worker architecture and subfolder scope-handling used in this project were inspired by and built upon the excellent template by **Mariko Kosaka (kosamari)**. 
-
-Special thanks for the insights on handling `github.io` domain caching:
+The Service Worker architecture and subfolder scope-handling used in this project were inspired by and built upon the template by **Mariko Kosaka (kosamari)**.
 - [ServiceWorker for GitHub Pages Gist](https://gist.github.com/kosamari/7c5d1e8449b2fbc97d372675f16b566e)
 
 ---
 
-## 🛡️ Privacy & Security
-
-BloomFocus does not have a backend.
-- **Your data:** Stored locally in your browser.
-- **Permissions:** Requests "Notification" access only to alert you when a timer finishes.
+*Built with ❤️ for those who strive to bloom.*
 
 ---
-
-*Built with ❤️ for those who strive to bloom.*
+*Generated with ❤️ using Google AI Studio.*
