@@ -19,7 +19,6 @@
             font-family: 'Outfit', sans-serif;
             transition: background-color 0.8s ease, color 0.8s ease;
         }
-        /* Prevent pull-to-refresh on mobile for a more app-like feel */
         body {
             overscroll-behavior-y: contain;
         }
@@ -27,10 +26,12 @@
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.0"
   }
 }
 </script>
@@ -38,20 +39,19 @@
 <body class="bg-gray-50 text-slate-900 overflow-x-hidden">
     <div id="root"></div>
     
-    <!-- Entry Point -->
+    <!-- Vite Entry Point -->
     <script type="module" src="./index.tsx"></script>
 
-    <!-- Service Worker Registration with Subfolder Handling -->
+    <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Detect the base path (e.g., /repository-name/)
           const path = window.location.pathname;
           const directory = path.substring(0, path.lastIndexOf('/') + 1);
           
           navigator.serviceWorker.register(directory + 'sw.js', { scope: directory })
-            .then(reg => console.log('Service Worker registered for scope:', reg.scope))
-            .catch(err => console.log('Service Worker registration failed: ', err));
+            .then(reg => console.log('Service Worker registered:', reg.scope))
+            .catch(err => console.log('Service Worker failed:', err));
         });
       }
     </script>
