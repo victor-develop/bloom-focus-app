@@ -13,6 +13,13 @@ const App: React.FC = () => {
   const [activeQuote, setActiveQuote] = useState<Quote | null>(null);
   const [showStats, setShowStats] = useState(false);
   const [preferredDuration, setPreferredDuration] = useState(25);
+  const buildExportBundle = useCallback(() => ({
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    stats,
+    preferredDuration,
+    lang
+  }), [stats, preferredDuration, lang]);
 
   // Load state from local storage on mount
   useEffect(() => {
@@ -120,6 +127,72 @@ const App: React.FC = () => {
     }
   }, [lang]);
 
+  const exportFile = useCallback(() => {
+    try {
+      const payload = buildExportBundle();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const stamp = new Date().toISOString().split('T')[0];
+      a.href = url;
+      a.download = `bloomfocus-backup-${stamp}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export failed', err);
+    }
+  }, [buildExportBundle]);
+
+  const copyExport = useCallback(async () => {
+    const payload = buildExportBundle();
+    const text = JSON.stringify(payload);
+    try {
+      await navigator.clipboard.writeText(text);
+      alert(lang === 'en' ? 'Copied backup to clipboard.' : '已复制备份到剪贴板。');
+    } catch {
+      window.prompt(lang === 'en' ? 'Copy the backup JSON:' : '复制以下备份 JSON：', text);
+    }
+  }, [buildExportBundle, lang]);
+
+  const applyImport = (data: any) => {
+    if (!data || typeof data !== 'object') throw new Error('Invalid data');
+    if (!Array.isArray(data.stats)) throw new Error('Missing stats');
+
+    setStats(data.stats);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data.stats));
+
+    if (typeof data.preferredDuration === 'number') {
+      setPreferredDuration(data.preferredDuration);
+      localStorage.setItem(PREF_DURATION_KEY, data.preferredDuration.toString());
+    }
+
+    if (data.lang === 'en' || data.lang === 'zh') {
+      setLang(data.lang);
+      localStorage.setItem(PREF_LANG_KEY, data.lang);
+    }
+  };
+
+  const importFromText = useCallback((raw: string) => {
+    try {
+      const parsed = JSON.parse(raw);
+      applyImport(parsed);
+      alert(TRANSLATIONS[lang].importSuccess);
+      window.location.reload();
+    } catch (err) {
+      console.error('Import failed', err);
+      alert(TRANSLATIONS[lang].importError);
+    }
+  }, [lang]);
+
+  const importFromFile = useCallback((file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result?.toString() || '';
+      importFromText(text);
+    };
+    reader.readAsText(file);
+  }, [importFromText]);
+
   const t = TRANSLATIONS[lang];
 
   const todayFlowers = useMemo(() => {
@@ -145,6 +218,15 @@ const App: React.FC = () => {
           onBack={() => setShowStats(false)} 
           onClear={clearStats} 
           onReset={resetApp}
+          onExportFile={exportFile}
+          onCopyExport={copyExport}
+          onImportFile={importFromFile}
+          onImportPaste={() => {
+            const promptText = window.prompt(t.importPrompt, '');
+            if (promptText) {
+              importFromText(promptText);
+            }
+          }}
         />
       </div>
     );

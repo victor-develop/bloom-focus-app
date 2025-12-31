@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Flower2, Mountain, Trash2, ArrowLeft, Sun, Calendar, RefreshCcw } from 'lucide-react';
+import { Flower2, Mountain, Trash2, ArrowLeft, Sun, Calendar, RefreshCcw, Upload, Download, ClipboardCopy } from 'lucide-react';
 import { DayStats, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -10,13 +10,30 @@ interface MeadowProps {
   onBack: () => void;
   onClear: () => void;
   onReset: () => void;
+  onExportFile: () => void;
+  onCopyExport: () => void;
+  onImportFile: (file: File) => void;
+  onImportPaste: () => void;
 }
 
-const Meadow: React.FC<MeadowProps> = ({ stats, lang, onBack, onClear, onReset }) => {
+const Meadow: React.FC<MeadowProps> = ({ stats, lang, onBack, onClear, onReset, onExportFile, onCopyExport, onImportFile, onImportPaste }) => {
   const t = TRANSLATIONS[lang];
   const todayDate = new Date().toISOString().split('T')[0];
   const todayStats = stats.find(s => s.date === todayDate) || { flowers: 0, stones: 0 };
   const history = stats.filter(s => s.date !== todayDate).sort((a, b) => b.date.localeCompare(a.date));
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const triggerFileImport = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onImportFile(file);
+    }
+    e.target.value = '';
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-sky-50 to-white overflow-y-auto pb-20">
@@ -55,6 +72,45 @@ const Meadow: React.FC<MeadowProps> = ({ stats, lang, onBack, onClear, onReset }
               <Trash2 size={22} />
             </button>
           </div>
+        </div>
+
+        {/* Data import/export */}
+        <div className="flex flex-wrap justify-end gap-2 mb-6">
+          <button 
+            onClick={onExportFile}
+            className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 backdrop-blur-md rounded-full border border-white/60 text-slate-600 shadow-sm text-xs font-semibold transition-all"
+          >
+            <Download size={16} />
+            <span>{t.exportFile}</span>
+          </button>
+          <button 
+            onClick={onCopyExport}
+            className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 backdrop-blur-md rounded-full border border-white/60 text-slate-600 shadow-sm text-xs font-semibold transition-all"
+          >
+            <ClipboardCopy size={16} />
+            <span>{t.copyExport}</span>
+          </button>
+          <button 
+            onClick={triggerFileImport}
+            className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 backdrop-blur-md rounded-full border border-white/60 text-slate-600 shadow-sm text-xs font-semibold transition-all"
+          >
+            <Upload size={16} />
+            <span>{t.importFile}</span>
+          </button>
+          <button 
+            onClick={onImportPaste}
+            className="flex items-center gap-2 px-4 py-2 bg-white/50 hover:bg-white/70 backdrop-blur-md rounded-full border border-white/60 text-slate-600 shadow-sm text-xs font-semibold transition-all"
+          >
+            <ClipboardCopy size={16} />
+            <span>{t.importPaste}</span>
+          </button>
+          <input 
+            ref={fileInputRef}
+            type="file"
+            accept="application/json"
+            className="hidden"
+            onChange={handleFileChange}
+          />
         </div>
 
         {/* Today's Immersive Section */}

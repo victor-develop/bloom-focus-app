@@ -183,7 +183,14 @@ export const TRANSLATIONS: TranslationsMap = {
     history: "Journey Logs",
     clearStats: "Clear Garden",
     noHistory: "Your garden is empty. Start focusing to plant your first seed.",
-    resetApp: "Reset App"
+    resetApp: "Reset App",
+    exportFile: "Export (file)",
+    copyExport: "Copy export",
+    importFile: "Import (file)",
+    importPaste: "Import (paste)",
+    importPrompt: "Paste backup JSON",
+    importSuccess: "Import complete. Reloading...",
+    importError: "Import failed. Check the file/content."
   },
   zh: {
     title: "心花绽放",
@@ -200,7 +207,14 @@ export const TRANSLATIONS: TranslationsMap = {
     history: "成长足迹",
     clearStats: "清空花园",
     noHistory: "这里还是一片荒芜。开始专注，种下你的第一颗种子吧。",
-    resetApp: "重置应用"
+    resetApp: "重置应用",
+    exportFile: "导出（文件）",
+    copyExport: "复制导出",
+    importFile: "导入（文件）",
+    importPaste: "导入（粘贴）",
+    importPrompt: "粘贴备份 JSON",
+    importSuccess: "导入完成，正在重载...",
+    importError: "导入失败，请检查文件/内容。"
   }
 };
 

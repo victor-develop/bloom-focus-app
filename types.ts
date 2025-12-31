@@ -31,6 +31,13 @@ export interface UIStrings {
   clearStats: string;
   noHistory: string;
   resetApp: string;
+  exportFile: string;
+  copyExport: string;
+  importFile: string;
+  importPaste: string;
+  importPrompt: string;
+  importSuccess: string;
+  importError: string;
 }
 
 export type TranslationsMap = Record<Language, UIStrings>;
