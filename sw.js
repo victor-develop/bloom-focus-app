@@ -1,6 +1,7 @@
 const APP_PREFIX = 'BloomFocus_';
-const VERSION = 'v1.5';
+const VERSION = 'v1.6';
 const CACHE_NAME = `${APP_PREFIX}${VERSION}`;
+const KNOWN_PREFIXES = [APP_PREFIX, 'BloomFocus_'];
 
 // Scope-aware base path so caching works on GitHub Pages subdirectories.
 const BASE_PATH = (() => {
@@ -20,18 +21,23 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keyList) =>
-      Promise.all(
-        keyList.map((key) => {
-          if (key.startsWith(APP_PREFIX) && key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-          return undefined;
-        })
-      )
-    ).then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys.map((key) => {
+        const isKnown = KNOWN_PREFIXES.some((prefix) => key.startsWith(prefix));
+        if (isKnown && key !== CACHE_NAME) {
+          return caches.delete(key);
+        }
+        return undefined;
+      })
+    );
+    await self.clients.claim();
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    clients.forEach((client) => {
+      client.navigate(client.url);
+    });
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
