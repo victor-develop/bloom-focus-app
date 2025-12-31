@@ -1,5 +1,5 @@
 const APP_PREFIX = 'BloomFocus_';
-const VERSION = 'v1.6';
+const VERSION = 'v1.7';
 const CACHE_NAME = `${APP_PREFIX}${VERSION}`;
 const KNOWN_PREFIXES = [APP_PREFIX, 'BloomFocus_'];
 
